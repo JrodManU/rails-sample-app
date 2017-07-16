@@ -1,12 +1,16 @@
 class User < ApplicationRecord
   attr_accessor :remember_token, :activation_token, :reset_token
+
+  has_many :microposts, dependent: :destroy
+
   before_save :downcase_email
   before_create :create_activation_digest
+
+  has_secure_password
 
   validates :name, presence: true, length: { maximum: 50 }
   VALID_EMAIL_REGEX = /\A([\w+\-].?)+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
   validates :email, presence: true, length: { maximum: 255 }, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
-  has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   def User.digest(string)
@@ -17,6 +21,10 @@ class User < ApplicationRecord
 
   def User.new_token
     SecureRandom.urlsafe_base64
+  end
+
+  def feed
+    Micropost.where("user_id=?", id)
   end
 
   def remember
