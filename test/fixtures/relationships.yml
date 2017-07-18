@@ -1,1 +1,11 @@
+one:
+  follower: jared
+  followed: derp
 
+two:
+  follower: derp
+  followed: archer
+
+three:
+  follower: derp
+  followed: jared
